@@ -1,5 +1,5 @@
 import {DataTypes, Model} from "sequelize";
-import {sequelize} from "../connect";
+import {db, sequelize} from "../connect";
 
 export class Viewer extends Model{}
 export class Seat extends Model{}
@@ -21,7 +21,11 @@ Viewer.init({
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isEmail: true
+        },
+        unique: true
     },
     age: {
         type: DataTypes.INTEGER,
@@ -29,7 +33,8 @@ Viewer.init({
     },
     mobile_no: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     gender: {
         type: DataTypes.STRING,
@@ -60,4 +65,6 @@ export const viewerSeats = Viewer.hasMany(Seat, {
     onUpdate: 'CASCADE'
 });
 Seat.belongsTo(Viewer);
+
+db.create_tables().then(result => console.log("Tables: Viewer, Seat are created", result));
 

@@ -1,5 +1,7 @@
 import express from 'express';
 import {RoutesConfig} from "./route.config";
+import {apiMiddleware} from "../middlewares/api.middleware";
+import {cinemaController} from "../controllers/cinema.controller";
 
 export class CinemasRoutes extends RoutesConfig {
 
@@ -9,34 +11,17 @@ export class CinemasRoutes extends RoutesConfig {
 
     configureRoutes() {
         this.app.route('/cinemas')
-            .all((req: express.Request, res: express.Response, next: express.NextFunction) => {
+            .all(apiMiddleware.validateApiKeyExists)
+            .get(cinemaController.get_cinemas)
+            .post(cinemaController.create_cinema);
 
-                next();
-            })
-            .get((req: express.Request, res: express.Response) => {
-                res.status(200).send(`List of users`);
-            })
-            .post((req: express.Request, res: express.Response) => {
-                res.status(200).send(`Post to users`);
-            });
-
+        this.app.param(`cinemaId`, apiMiddleware.extractId);
         this.app.route('/cinemas/:cinemaId')
-            .all((req: express.Request, res: express.Response, next: express.NextFunction) => {
-
-                next();
-            })
-            .get((req: express.Request, res: express.Response) => {
-                res.status(200).send(`GET requested for id ${req.params.userId}`);
-            })
-            .put((req: express.Request, res: express.Response) => {
-                res.status(200).send(`PUT requested for id ${req.params.userId}`);
-            })
-            .patch((req: express.Request, res: express.Response) => {
-                res.status(200).send(`PATCH requested for id ${req.params.userId}`);
-            })
-            .delete((req: express.Request, res: express.Response) => {
-                res.status(200).send(`DELETE requested for id ${req.params.userId}`);
-            });
+            .all(apiMiddleware.validateApiKeyExists)
+            .get(cinemaController.get_cinema)
+            .put(cinemaController.update_cinema)
+            .patch(cinemaController.rate_cinema)
+            .delete(cinemaController.delete_cinema);
 
         return this.app;
     }

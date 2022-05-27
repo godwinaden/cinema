@@ -27,7 +27,7 @@ class SqliteDB{
 
     create_tables = async () => {
         try {
-            await this.sequelize.sync({ alter: true });
+            await this.sequelize.sync();
         }catch (err) {
             console.log("Connection Status: ", this.isConnected, err)
         }

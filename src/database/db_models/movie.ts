@@ -1,5 +1,5 @@
 import {DataTypes, Model} from "sequelize";
-import {sequelize} from "../connect";
+import {db, sequelize} from "../connect";
 
 export class Movie extends Model{}
 export class Cast extends Model{}
@@ -25,6 +25,14 @@ Movie.init({
             isAlphanumeric: true,
             len: [2, 60]
         }
+    },
+    cover_url: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+            isUrl: true,
+        },
+        unique: true
     },
     episode: {
         type: DataTypes.INTEGER,
@@ -118,4 +126,6 @@ export const movieCasts = Movie.hasMany(Cast, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
-export const CastsMovie = Cast.belongsTo(Movie, {as: "movie"});
+export const CastsMovie = Cast.belongsTo(Movie, {as: "Movie"});
+
+db.create_tables().then(result => console.log("Tables: Movie, Cast are created", result));

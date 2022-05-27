@@ -1,5 +1,3 @@
-
-
 // creating a custom type for any json object
 import {Cinema, Show} from "../db_models/cinema";
 import {Movie} from "../db_models/movie";
@@ -32,6 +30,7 @@ class CinemaRepo{
                 where: {
                     status: true
                 },
+                include: { all: true, nested: true },
                 order: [
                     ['createdAt', 'DESC'],
                     [Show, Movie, 'createdAt', 'DESC'],
@@ -43,18 +42,18 @@ class CinemaRepo{
         }
     }
 
-    async get_cinema_with_shows(cinema_id: number, limit: number, offset: number){
+    async get_cinema_with_shows(cinema_id: number){
         try{
             return await Cinema.findOne({
                 where: {
                     id: cinema_id,
                     status: true
                 },
+                include: { all: true, nested: true },
                 order: [
                     ['createdAt', 'DESC'],
                     [Show, Movie, 'createdAt', 'DESC'],
                 ],
-                offset: offset, limit: limit
             });
         } catch(err: any){
             throw new Error(err.toString());
@@ -94,3 +93,5 @@ class CinemaRepo{
         }
     }
 }
+
+export const cinemaRepo = new CinemaRepo();

@@ -1,5 +1,5 @@
 import {DataTypes, Model} from "sequelize";
-import {sequelize} from "../connect";
+import {db, sequelize} from "../connect";
 import {Movie} from "./movie";
 
 export class Cinema extends Model{}
@@ -81,6 +81,8 @@ export const cinemaShows = Cinema.hasMany(Show, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
-Show.belongsTo(Cinema, {as: "cinema"});
-Show.hasOne(Movie, {as: 'movie'});
+Show.belongsTo(Cinema, {as: "Cinema"});
+Show.hasOne(Movie, {as: 'Movie'});
 Movie.belongsTo(Show);
+
+db.create_tables().then(result => console.log("Tables: Cinema, Show are created", result));
